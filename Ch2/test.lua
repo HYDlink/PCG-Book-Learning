@@ -1,5 +1,6 @@
 Class = require 'class'
 local Rect = require 'Rect'
-r1 = Rect(10, 10, 40, 40)
-r2 = Rect(30, 20, 40, 40)
-print(r1:intersect(r2))
+local Node = require 'BSP'
+
+fullRect = Rect(0, 0, 640, 480)
+    bsp = Node.createRandomBSP(fullRect, 16, 64, 64, createCell)

@@ -63,6 +63,7 @@ end
 ---TODO create cell, hover on rect to show info, save rect dict
 function Node.createRandomBSP(rect, depth, minW, minH, funcRectNode)
     if depth <= 0 or rect.w < minW or rect.h < minH then
+        print(depth, rect)
         return nil
     end
 
@@ -77,8 +78,8 @@ function Node.createRandomBSP(rect, depth, minW, minH, funcRectNode)
         funcRectNode(rect, node)
     end
 
-    node.child1 = Node.createRandomBSP(node.child1.rect, depth - 1, minW, minH)
-    node.child2 = Node.createRandomBSP(node.child2.rect, depth - 1, minW, minH)
+    node.child1 = Node.createRandomBSP(node.child1.rect, depth - 1, minW, minH, funcRectNode)
+    node.child2 = Node.createRandomBSP(node.child2.rect, depth - 1, minW, minH, funcRectNode)
 
     return node
 end
@@ -107,9 +108,9 @@ function Node:draw(maxDepth, depth)
                 love.graphics.setColor(1, 0, 0, 1)
                 love.graphics.rectangle("fill", r.x, r.y, r.w, r.h)
 
-                local x, y, w, h = r.x + MARGIN, r.y + MARGIN, r.w - MARGIN * 2, r.h - MARGIN * 2
+                local c = node.cell
                 love.graphics.setColor(depth / maxDepth, depth / maxDepth, depth / maxDepth, 1)
-                love.graphics.rectangle("fill", x, y, w, h)
+                love.graphics.rectangle("fill", c.x, c.y, c.w, c.h)
             end
         end,
         maxDepth,
