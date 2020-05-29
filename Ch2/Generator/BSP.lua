@@ -1,7 +1,6 @@
 --- BSP 节点的内容
 --- 横向分割还是竖向分割，分割的百分比
 --- 两个节点指针，当前节点的数据
-local Rect = require "Rect"
 local DIV = {"h", "v"}
 
 ---@class Node
@@ -63,14 +62,14 @@ end
 ---TODO create cell, hover on rect to show info, save rect dict
 function Node.createRandomBSP(rect, depth, minW, minH, funcRectNode)
     if depth <= 0 or rect.w < minW or rect.h < minH then
-        print(depth, rect)
+        -- print(depth, rect)
         return nil
     end
 
     local div = DIV[math.random(1, 2)]
     -- 被 math.random(m, n) 摆了一套, 带参数, 得到的结果就一定是整数
-    local divPercent = math.random() / 2 + 0.3
-    print(depth, rect, div, divPercent)
+    local divPercent = math.randomFloat(0.3, 0.5)
+    -- print(depth, rect, div, divPercent)
 
     local node = Node(rect, div, divPercent)
     node:div()
@@ -82,6 +81,19 @@ function Node.createRandomBSP(rect, depth, minW, minH, funcRectNode)
     node.child2 = Node.createRandomBSP(node.child2.rect, depth - 1, minW, minH, funcRectNode)
 
     return node
+end
+
+function Node.createRandomCells(rect, depth, minW, minH)
+    function createCell(rect, node)
+        -- 随机选择一个 bound
+
+        local wp = math.randomFloat(0.7, 1)
+        local hp = math.randomFloat(0.7, 1)
+        local w, h = wp * rect.w, hp * rect.h
+        local offset = { x = math.random(0, rect.w - w), y = math.random(0, rect.h - h) }
+        node.cell = Rect(offset.x + rect.x, offset.y + rect.y, w, h)
+    end
+    return Node.createRandomBSP(rect, depth, minW, minH, createCell)
 end
 
 function Node:traverse(func, maxDepth, depth)
